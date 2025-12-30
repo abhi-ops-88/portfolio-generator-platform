@@ -12,6 +12,7 @@ import {
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../config/firebase';
 import { toast } from 'react-toastify';
+import autoDeployService from '../services/autoDeployService';
 
 const AuthContext = createContext();
 
@@ -64,6 +65,10 @@ export const AuthProvider = ({ children }) => {
     
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Auto-create repository and basic portfolio on login
+      await handlePostLoginSetup(result.user);
+      
       toast.success('Welcome back!');
       return result;
     } catch (error) {
@@ -84,11 +89,106 @@ export const AuthProvider = ({ children }) => {
       // Create or update user profile in Firestore
       await createUserProfile(result.user);
       
+      // Auto-create repository and basic portfolio on login
+      await handlePostLoginSetup(result.user);
+      
       toast.success('Successfully signed in with Google!');
       return result;
     } catch (error) {
       console.error('Google sign in error:', error);
       throw error;
+    }
+  };
+
+  // Handle post-login setup (repository creation, basic portfolio)
+  const handlePostLoginSetup = async (user) => {
+    try {
+      // Check if user already has a repository
+      const existingRepo = localStorage.getItem('user_repo_info');
+      if (existingRepo) {
+        console.log('User already has a repository configured');
+        return;
+      }
+
+      // Get user's portfolio data or create basic data
+      const portfolios = await getUserPortfolios();
+      let portfolioData = null;
+      
+      if (portfolios.length > 0) {
+        // Use the most recent portfolio
+        portfolioData = portfolios[portfolios.length - 1].data;
+      } else {
+        // Create basic portfolio data
+        portfolioData = {
+          personalInfo: {
+            name: user.displayName || 'Your Name',
+            title: 'Professional',
+            email: user.email,
+            tagline: 'Welcome to my professional portfolio'
+          },
+          about: {
+            description: 'Professional with passion for creating amazing experiences.',
+            skills: ['JavaScript', 'React', 'Node.js']
+          },
+          resume: {
+            education: [{
+              degree: 'Your Degree',
+              school: 'Your School',
+              year: '2020-2024',
+              description: 'Relevant coursework and achievements'
+            }],
+            experience: [{
+              title: 'Your Position',
+              company: 'Your Company',
+              period: '2022-Present',
+              description: 'Key responsibilities and achievements'
+            }]
+          },
+          projects: [{
+            title: 'Sample Project',
+            description: 'Description of your amazing project',
+            technologies: ['React', 'JavaScript'],
+            liveUrl: '',
+            githubUrl: ''
+          }],
+          social: {
+            linkedin: '',
+            github: '',
+            twitter: '',
+            instagram: ''
+          },
+          contact: {
+            email: user.email,
+            phone: '',
+            location: ''
+          },
+          theme: {
+            primaryColor: '#3b82f6',
+            accentColor: '#ffd700',
+            primaryColorDark: '#2563eb'
+          }
+        };
+
+        // Save this basic portfolio data
+        await savePortfolio(portfolioData);
+      }
+
+      // Auto-create GitHub repository with basic portfolio
+      const repoResult = await autoDeployService.createUserRepository(user, portfolioData);
+      
+      if (repoResult) {
+        console.log('Repository created successfully:', repoResult);
+        
+        // Auto-deploy to GitHub Pages by default
+        try {
+          await autoDeployService.autoDeployPortfolio(portfolioData, 'github');
+        } catch (deployError) {
+          console.log('Auto-deployment skipped:', deployError.message);
+        }
+      }
+    } catch (error) {
+      console.error('Post-login setup error:', error);
+      // Don't throw error to avoid blocking login
     }
   };
 
@@ -283,7 +383,8 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     updateUserProfile,
     savePortfolio,
-    getUserPortfolios
+    getUserPortfolios,
+    handlePostLoginSetup
   };
 
   return (

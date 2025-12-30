@@ -10,6 +10,7 @@ import SocialForm from '../components/forms/SocialForm';
 import ContactForm from '../components/forms/ContactForm';
 import ThemeForm from '../components/forms/ThemeForm';
 import { ChevronLeft, ChevronRight, Save, Eye } from 'lucide-react';
+import autoDeployService from '../services/autoDeployService';
 
 const Generator = () => {
   const navigate = useNavigate();
@@ -107,7 +108,95 @@ const Generator = () => {
     }));
   };
 
+  const validateCurrentStep = () => {
+    const { personalInfo, about, resume, projects, contact } = portfolioData;
+    
+    switch (currentStep) {
+      case 0: // Personal Info
+        if (!personalInfo.name.trim()) {
+          toast.error('Full Name is required');
+          return false;
+        }
+        if (!personalInfo.title.trim()) {
+          toast.error('Professional Title is required');
+          return false;
+        }
+        if (!personalInfo.email.trim()) {
+          toast.error('Email Address is required');
+          return false;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalInfo.email)) {
+          toast.error('Please enter a valid email address');
+          return false;
+        }
+        break;
+      
+      case 1: // About Me
+        if (!about.description.trim()) {
+          toast.error('About description is required');
+          return false;
+        }
+        if (!about.skills || about.skills.length === 0) {
+          toast.error('At least one skill is required');
+          return false;
+        }
+        break;
+      
+      case 2: // Resume
+        if (!resume.experience || resume.experience.length === 0) {
+          toast.error('At least one work experience is required');
+          return false;
+        }
+        if (!resume.education || resume.education.length === 0) {
+          toast.error('At least one education entry is required');
+          return false;
+        }
+        break;
+      
+      case 3: // Projects
+        if (!projects || projects.length === 0) {
+          toast.error('At least one project is required');
+          return false;
+        }
+        // Validate each project has required fields
+        for (let i = 0; i < projects.length; i++) {
+          const project = projects[i];
+          if (!project.title.trim()) {
+            toast.error(`Project ${i + 1}: Title is required`);
+            return false;
+          }
+          if (!project.description.trim()) {
+            toast.error(`Project ${i + 1}: Description is required`);
+            return false;
+          }
+        }
+        break;
+      
+      case 4: // Social Links - Optional, no validation needed
+        break;
+      
+      case 5: // Contact
+        if (!contact.email.trim()) {
+          toast.error('Contact email is required');
+          return false;
+        }
+        break;
+      
+      case 6: // Theme - No validation needed
+        break;
+      
+      default:
+        return true;
+    }
+    
+    return true;
+  };
+
   const nextStep = () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+    
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
@@ -148,6 +237,12 @@ const Generator = () => {
     try {
       setLoading(true);
       
+      // Validate all required fields before generating
+      if (!validateAllSteps()) {
+        toast.error('Please complete all required fields before generating');
+        return;
+      }
+      
       // Save portfolio data first
       const savedPortfolioId = await savePortfolio(portfolioData, portfolioId);
       
@@ -177,7 +272,26 @@ const Generator = () => {
         localStorage.setItem('generatedPortfolio', JSON.stringify(result.files));
         localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
         localStorage.setItem('currentPortfolioId', savedPortfolioId || portfolioId || '');
-        toast.success('Portfolio generated successfully!');
+        
+        // Auto-deploy if tokens are configured
+        try {
+          const availablePlatforms = autoDeployService.getAvailablePlatforms();
+          if (availablePlatforms.length > 0) {
+            toast.info('Deploying your portfolio...');
+            const deployResult = await autoDeployService.autoDeployPortfolio(portfolioData, 'github');
+            if (deployResult.success) {
+              toast.success('Portfolio generated and deployed successfully!');
+            }
+          } else {
+            toast.success('Portfolio generated successfully!');
+            toast.info('Configure deployment tokens to automatically deploy your portfolio');
+          }
+        } catch (deployError) {
+          console.log('Auto-deployment failed:', deployError);
+          toast.success('Portfolio generated successfully!');
+          toast.warning('Auto-deployment failed. You can deploy manually from the dashboard.');
+        }
+        
         navigate('/preview');
       } else {
         toast.error(result.message || 'Failed to generate portfolio');
@@ -188,6 +302,21 @@ const Generator = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const validateAllSteps = () => {
+    for (let i = 0; i < steps.length - 1; i++) { // Skip theme validation
+      const originalStep = currentStep;
+      setCurrentStep(i);
+      const isValid = validateCurrentStep();
+      setCurrentStep(originalStep);
+      
+      if (!isValid) {
+        setCurrentStep(i); // Navigate to the invalid step
+        return false;
+      }
+    }
+    return true;
   };
 
   const CurrentStepComponent = steps[currentStep].component;

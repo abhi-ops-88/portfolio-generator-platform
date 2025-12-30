@@ -58,6 +58,120 @@ router.post('/create-repo', async (req, res) => {
         }
 
         // Upload or update file
+        const fileContent = Buffer.from(content).toString('base64');
+        
+        const uploadData = {
+          message: sha ? `Update ${filename}` : `Add ${filename}`,
+          content: fileContent,
+          branch: 'main'
+        };
+
+        if (sha) {
+          uploadData.sha = sha;
+        }
+
+        await githubApi.put(`/repos/${username}/${repoName}/contents/${filename}`, uploadData);
+        console.log(`✅ Uploaded: ${filename}`);
+      } catch (error) {
+        console.error(`❌ Failed to upload ${filename}:`, error.response?.data || error.message);
+        throw error;
+      }
+    });
+
+    await Promise.all(uploadPromises);
+
+    const repoUrl = `https://github.com/${username}/${repoName}`;
+    const cloneUrl = `https://github.com/${username}/${repoName}.git`;
+    const siteUrl = `https://${username}.github.io/${repoName}`;
+
+    res.json({
+      success: true,
+      message: 'Repository created and files uploaded successfully',
+      repoUrl,
+      cloneUrl,
+      siteUrl,
+      filesUploaded: Object.keys(portfolioFiles).length
+    });
+
+  } catch (error) {
+    console.error('GitHub repository creation error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.response?.data?.message || error.message || 'Failed to create repository'
+    });
+  }
+});
+
+// Update files in existing repository
+router.post('/update-files', async (req, res) => {
+  try {
+    const { username, repoName, portfolioFiles, githubToken } = req.body;
+
+    if (!username || !repoName || !portfolioFiles || !githubToken) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: username, repoName, portfolioFiles, githubToken'
+      });
+    }
+
+    const githubApi = axios.create({
+      baseURL: 'https://api.github.com',
+      headers: {
+        'Authorization': `token ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Portfolio-Generator'
+      }
+    });
+
+    console.log(`Updating files in repository: ${username}/${repoName}`);
+    
+    const uploadPromises = Object.entries(portfolioFiles).map(async ([filename, content]) => {
+      try {
+        // Get existing file SHA if it exists
+        let sha = null;
+        try {
+          const existingFile = await githubApi.get(`/repos/${username}/${repoName}/contents/${filename}`);
+          sha = existingFile.data.sha;
+        } catch (error) {
+          // File doesn't exist, will create new
+        }
+
+        const fileContent = Buffer.from(content).toString('base64');
+        
+        const uploadData = {
+          message: `Update ${filename} - ${new Date().toISOString()}`,
+          content: fileContent,
+          branch: 'main'
+        };
+
+        if (sha) {
+          uploadData.sha = sha;
+        }
+
+        await githubApi.put(`/repos/${username}/${repoName}/contents/${filename}`, uploadData);
+        console.log(`✅ Updated: ${filename}`);
+      } catch (error) {
+        console.error(`❌ Failed to update ${filename}:`, error.response?.data || error.message);
+        throw error;
+      }
+    });
+
+    await Promise.all(uploadPromises);
+
+    res.json({
+      success: true,
+      message: 'Repository files updated successfully',
+      filesUpdated: Object.keys(portfolioFiles).length
+    });
+
+  } catch (error) {
+    console.error('GitHub file update error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.response?.data?.message || error.message || 'Failed to update repository files'
+    });
+  }
+});
         const fileData = {
           message: `Add ${filename}`,
           content: Buffer.from(content).toString('base64'),

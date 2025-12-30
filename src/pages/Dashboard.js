@@ -13,8 +13,15 @@ import {
   User,
   Settings,
   LogOut,
-  FileText
+  FileText,
+  Key,
+  AlertCircle,
+  CheckCircle,
+  ExternalLink,
+  Zap
 } from 'lucide-react';
+import TokenSetup from '../components/TokenSetup';
+import autoDeployService from '../services/autoDeployService';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,10 +29,24 @@ const Dashboard = () => {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showTokenSetup, setShowTokenSetup] = useState(false);
+  const [deploymentTokens, setDeploymentTokens] = useState({});
+  const [repoInfo, setRepoInfo] = useState(null);
 
   useEffect(() => {
     loadPortfolios();
+    checkDeploymentSetup();
   }, []);
+
+  const checkDeploymentSetup = () => {
+    const tokens = autoDeployService.hasDeploymentTokens();
+    setDeploymentTokens(tokens);
+    
+    const storedRepoInfo = localStorage.getItem('user_repo_info');
+    if (storedRepoInfo) {
+      setRepoInfo(JSON.parse(storedRepoInfo));
+    }
+  };
 
   const loadPortfolios = async () => {
     try {
@@ -60,6 +81,39 @@ const Dashboard = () => {
     } catch (error) {
       toast.error('Failed to delete portfolio');
     }
+  };
+
+  const handleQuickDeploy = async (portfolio) => {
+    try {
+      const availablePlatforms = autoDeployService.getAvailablePlatforms();
+      if (availablePlatforms.length === 0) {
+        toast.error('Please configure deployment tokens first');
+        setShowTokenSetup(true);
+        return;
+      }
+
+      // Use the first available platform (GitHub by default)
+      const platform = availablePlatforms.includes('github') ? 'github' : availablePlatforms[0];
+      
+      toast.info(`Deploying to ${platform}...`);
+      const result = await autoDeployService.autoDeployPortfolio(portfolio.data, platform);
+      
+      if (result.success) {
+        toast.success(`Portfolio deployed successfully to ${platform}!`);
+        // Update portfolio status
+        portfolio.status = 'deployed';
+        loadPortfolios();
+      }
+    } catch (error) {
+      console.error('Quick deploy error:', error);
+      toast.error(`Deployment failed: ${error.message}`);
+    }
+  };
+
+  const handleTokensConfigured = () => {
+    checkDeploymentSetup();
+    setShowTokenSetup(false);
+    toast.success('Deployment tokens configured! You can now deploy portfolios.');
   };
 
   const formatDate = (date) => {
@@ -151,6 +205,82 @@ const Dashboard = () => {
 
       <div className="dashboard-content">
         <div className="container">
+          {/* Deployment Status Section */}
+          <div className="deployment-status-section">
+            <div className="status-card">
+              <div className="status-header">
+                <div className="status-info">
+                  <Key className="w-5 h-5" />
+                  <h3>Deployment Setup</h3>
+                </div>
+                {!deploymentTokens.github ? (
+                  <AlertCircle className="w-5 h-5 text-amber-500" />
+                ) : (
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                )}
+              </div>
+              
+              <div className="status-content">
+                {!deploymentTokens.github ? (
+                  <div className="setup-needed">
+                    <p>Configure your deployment tokens to enable automatic portfolio deployment</p>
+                    <button 
+                      onClick={() => setShowTokenSetup(true)}
+                      className="btn btn-primary btn-small"
+                    >
+                      <Key className="w-4 h-4" />
+                      Setup Deployment
+                    </button>
+                  </div>
+                ) : (
+                  <div className="setup-complete">
+                    <p>✅ Deployment configured and ready</p>
+                    {repoInfo && (
+                      <div className="repo-info">
+                        <p><strong>Repository:</strong> {repoInfo.username}/{repoInfo.repoName}</p>
+                        {repoInfo.siteUrl && (
+                          <a 
+                            href={repoInfo.siteUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="site-link"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            View Live Site
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    <button 
+                      onClick={() => setShowTokenSetup(true)}
+                      className="btn btn-secondary btn-small"
+                    >
+                      <Settings className="w-4 h-4" />
+                      Manage Tokens
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {showTokenSetup && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h2>Deployment Configuration</h2>
+                  <button 
+                    onClick={() => setShowTokenSetup(false)}
+                    className="modal-close"
+                  >
+                    ×
+                  </button>
+                </div>
+                <TokenSetup onTokensConfigured={handleTokensConfigured} />
+              </div>
+            </div>
+          )}
+
           {portfolios.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-content">
@@ -212,9 +342,19 @@ const Dashboard = () => {
                       >
                         <Edit className="w-4 h-4" />
                       </button>
-                      {portfolio.status === 'deployed' && (
+                      {deploymentTokens.github && (
+                        <button
+                          className="action-btn deploy"
+                          onClick={() => handleQuickDeploy(portfolio)}
+                          title="Quick Deploy"
+                        >
+                          <Zap className="w-4 h-4" />
+                        </button>
+                      )}
+                      {portfolio.status === 'deployed' && repoInfo?.siteUrl && (
                         <button
                           className="action-btn"
+                          onClick={() => window.open(repoInfo.siteUrl, '_blank')}
                           title="View Live Site"
                         >
                           <Globe className="w-4 h-4" />
@@ -356,6 +496,144 @@ const Dashboard = () => {
 
         .dashboard-content {
           padding: 2rem 0;
+        }
+
+        .deployment-status-section {
+          margin-bottom: 2rem;
+        }
+
+        .status-card {
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.75rem;
+          padding: 1.5rem;
+        }
+
+        .status-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+
+        .status-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .status-info h3 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: #111827;
+          margin: 0;
+        }
+
+        .setup-needed p {
+          color: #6b7280;
+          margin-bottom: 1rem;
+        }
+
+        .setup-complete p {
+          color: #059669;
+          font-weight: 500;
+          margin-bottom: 1rem;
+        }
+
+        .repo-info {
+          background: #f9fafb;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .repo-info p {
+          margin: 0 0 0.5rem;
+          font-size: 0.875rem;
+          color: #374151;
+        }
+
+        .site-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #3b82f6;
+          text-decoration: none;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .site-link:hover {
+          color: #2563eb;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .modal-content {
+          background: white;
+          border-radius: 0.75rem;
+          max-width: 900px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem 1.5rem 0;
+          border-bottom: 1px solid #e5e7eb;
+          margin-bottom: 0;
+        }
+
+        .modal-header h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #111827;
+          margin: 0;
+        }
+
+        .modal-close {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: #6b7280;
+          cursor: pointer;
+          padding: 0.5rem;
+          line-height: 1;
+        }
+
+        .modal-close:hover {
+          color: #374151;
+        }
+
+        .btn-small {
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+        }
+
+        .action-btn.deploy {
+          background: #fef3c7;
+          color: #92400e;
+          border-color: #fde68a;
+        }
+
+        .action-btn.deploy:hover {
+          background: #fde68a;
+          color: #78350f;
         }
 
         .empty-state {
