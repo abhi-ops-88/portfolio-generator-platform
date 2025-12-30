@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { User, LogOut } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, getUserPortfolios } = useAuth();
+  const [portfolioCount, setPortfolioCount] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      loadPortfolioCount();
+    }
+  }, [user]);
+
+  const loadPortfolioCount = async () => {
+    try {
+      const portfolios = await getUserPortfolios();
+      setPortfolioCount(portfolios.length);
+    } catch (error) {
+      console.error('Error loading portfolio count:', error);
+    }
+  };
+
+  const handleCreatePortfolio = () => {
+    if (portfolioCount >= 2) {
+      toast.error('You can only create up to 2 portfolios. Please delete an existing portfolio first.');
+      navigate('/dashboard');
+      return;
+    }
+    navigate('/generator');
+  };
 
   const isActive = (path) => {
     return location.pathname === path ? 'active' : '';
@@ -40,9 +66,12 @@ const Header = () => {
               <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
                 Dashboard
               </Link>
-              <Link to="/generator" className={`nav-link ${isActive('/generator')}`}>
+              <button 
+                onClick={handleCreatePortfolio}
+                className={`nav-link nav-button ${isActive('/generator')}`}
+              >
                 Create Portfolio
-              </Link>
+              </button>
               <div className="user-section">
                 <div className="user-info">
                   {user.photoURL ? (
@@ -120,6 +149,14 @@ const Header = () => {
         .nav-link:hover,
         .nav-link.active {
           color: #3b82f6;
+        }
+
+        .nav-button {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: inherit;
+          font-size: inherit;
         }
 
         .user-section {

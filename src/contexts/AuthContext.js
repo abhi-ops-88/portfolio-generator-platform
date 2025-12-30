@@ -169,8 +169,10 @@ export const AuthProvider = ({ children }) => {
           }
         };
 
-        // Save this basic portfolio data
-        await savePortfolio(portfolioData);
+        // Save this basic portfolio data (only if user has no portfolios)
+        if (portfolios.length === 0) {
+          await savePortfolio(portfolioData);
+        }
       }
 
       // Auto-create GitHub repository with basic portfolio
@@ -288,6 +290,11 @@ export const AuthProvider = ({ children }) => {
         const userData = userSnap.data();
         const portfolios = userData.portfolios || [];
         
+        // Check portfolio limit for new portfolios
+        if (!portfolioId && portfolios.length >= 2) {
+          throw new Error('You can only create up to 2 portfolios. Please delete an existing portfolio first.');
+        }
+        
         const portfolioEntry = {
           id: portfolioId || Date.now().toString(),
           data: portfolioData,
@@ -317,6 +324,36 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error saving portfolio:', error);
+      throw error;
+    }
+  };
+
+  // Delete portfolio
+  const deletePortfolio = async (portfolioId) => {
+    if (!user) throw new Error('User must be authenticated');
+    if (!db) throw new Error('Database is not configured');
+
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const portfolios = userData.portfolios || [];
+        
+        // Remove the portfolio with the specified ID
+        const updatedPortfolios = portfolios.filter(p => p.id !== portfolioId);
+        
+        await updateDoc(userRef, {
+          portfolios: updatedPortfolios,
+          updatedAt: new Date()
+        });
+
+        toast.success('Portfolio deleted successfully!');
+        return true;
+      }
+    } catch (error) {
+      console.error('Error deleting portfolio:', error);
       throw error;
     }
   };
@@ -383,6 +420,7 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     updateUserProfile,
     savePortfolio,
+    deletePortfolio,
     getUserPortfolios,
     handlePostLoginSetup
   };

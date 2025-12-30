@@ -25,7 +25,7 @@ import autoDeployService from '../services/autoDeployService';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, userProfile, logout, getUserPortfolios } = useAuth();
+  const { user, userProfile, logout, getUserPortfolios, deletePortfolio } = useAuth();
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -69,17 +69,17 @@ const Dashboard = () => {
     }
   };
 
-  const deletePortfolio = async (portfolioId) => {
-    if (!window.confirm('Are you sure you want to delete this portfolio?')) {
+  const deletePortfolioHandler = async (portfolioId) => {
+    if (!window.confirm('Are you sure you want to delete this portfolio? This action cannot be undone.')) {
       return;
     }
 
     try {
-      // Implementation for deleting portfolio
-      toast.success('Portfolio deleted successfully');
-      loadPortfolios();
+      await deletePortfolio(portfolioId);
+      loadPortfolios(); // Refresh the portfolio list
     } catch (error) {
-      toast.error('Failed to delete portfolio');
+      console.error('Delete portfolio error:', error);
+      toast.error(error.message || 'Failed to delete portfolio');
     }
   };
 
@@ -161,10 +161,19 @@ const Dashboard = () => {
             </div>
             
             <div className="header-actions">
-              <Link to="/generator" className="btn btn-primary">
+              <button
+                onClick={() => {
+                  if (portfolios.length >= 2) {
+                    toast.error('You can only create up to 2 portfolios. Please delete an existing portfolio first.');
+                    return;
+                  }
+                  navigate('/generator');
+                }}
+                className="btn btn-primary"
+              >
                 <Plus className="w-4 h-4" />
                 Create New Portfolio
-              </Link>
+              </button>
               
               <div className="user-menu">
                 <button
@@ -264,6 +273,24 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Portfolio Limit Info */}
+          <div className="portfolio-limit-info">
+            <div className="limit-card">
+              <div className="limit-header">
+                <h3>Portfolio Limit</h3>
+                <div className={`limit-badge ${portfolios.length >= 2 ? 'limit-reached' : 'limit-available'}`}>
+                  {portfolios.length}/2
+                </div>
+              </div>
+              <p>
+                {portfolios.length >= 2 
+                  ? 'You have reached the maximum number of portfolios. Delete an existing portfolio to create a new one.'
+                  : `You can create ${2 - portfolios.length} more portfolio${2 - portfolios.length === 1 ? '' : 's'}.`
+                }
+              </p>
+            </div>
+          </div>
+
           {showTokenSetup && (
             <div className="modal-overlay">
               <div className="modal-content">
@@ -287,20 +314,33 @@ const Dashboard = () => {
                 <FileText className="w-16 h-16 text-gray-400" />
                 <h2>No portfolios yet</h2>
                 <p>Create your first portfolio to get started</p>
-                <Link to="/generator" className="btn btn-primary btn-large">
+                <button
+                  onClick={() => navigate('/generator')}
+                  className="btn btn-primary btn-large"
+                >
                   <Plus className="w-5 h-5" />
                   Create Your First Portfolio
-                </Link>
+                </button>
               </div>
             </div>
           ) : (
             <div className="portfolios-section">
               <div className="section-header">
-                <h2>Your Portfolios ({portfolios.length})</h2>
-                <Link to="/generator" className="btn btn-secondary">
+                <h2>Your Portfolios ({portfolios.length}/2)</h2>
+                <button
+                  onClick={() => {
+                    if (portfolios.length >= 2) {
+                      toast.error('You can only create up to 2 portfolios. Please delete an existing portfolio first.');
+                      return;
+                    }
+                    navigate('/generator');
+                  }}
+                  className="btn btn-secondary"
+                  disabled={portfolios.length >= 2}
+                >
                   <Plus className="w-4 h-4" />
                   New Portfolio
-                </Link>
+                </button>
               </div>
               
               <div className="portfolios-grid">
@@ -362,7 +402,7 @@ const Dashboard = () => {
                       )}
                       <button
                         className="action-btn delete"
-                        onClick={() => deletePortfolio(portfolio.id)}
+                        onClick={() => deletePortfolioHandler(portfolio.id)}
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -502,6 +542,54 @@ const Dashboard = () => {
           margin-bottom: 2rem;
         }
 
+        .portfolio-limit-info {
+          margin-bottom: 2rem;
+        }
+
+        .limit-card {
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.75rem;
+          padding: 1.5rem;
+        }
+
+        .limit-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+
+        .limit-header h3 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: #111827;
+          margin: 0;
+        }
+
+        .limit-badge {
+          padding: 0.25rem 0.75rem;
+          border-radius: 1rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+        }
+
+        .limit-available {
+          background: #dcfce7;
+          color: #166534;
+        }
+
+        .limit-reached {
+          background: #fee2e2;
+          color: #dc2626;
+        }
+
+        .limit-card p {
+          color: #6b7280;
+          margin: 0;
+          font-size: 0.875rem;
+        }
+
         .status-card {
           background: white;
           border: 1px solid #e5e7eb;
@@ -623,6 +711,20 @@ const Dashboard = () => {
         .btn-small {
           padding: 0.5rem 1rem;
           font-size: 0.875rem;
+        }
+
+        .btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          background: #f3f4f6;
+          color: #9ca3af;
+          border-color: #e5e7eb;
+        }
+
+        .btn:disabled:hover {
+          background: #f3f4f6;
+          color: #9ca3af;
+          transform: none;
         }
 
         .action-btn.deploy {

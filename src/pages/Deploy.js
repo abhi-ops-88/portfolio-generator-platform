@@ -614,10 +614,13 @@ const Deploy = () => {
 
               <div className="success-actions">
                 <button
-                  onClick={() => navigate('/')}
+                  onClick={() => {
+                    // Check portfolio limit before navigating
+                    navigate('/dashboard');
+                  }}
                   className="btn btn-secondary"
                 >
-                  Create Another Portfolio
+                  Back to Dashboard
                 </button>
                 <a
                   href={deploymentResult.deployment.siteUrl}
