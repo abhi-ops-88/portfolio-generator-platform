@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Rocket, Github, Globe, Zap, Users, Star } from 'lucide-react';
+import FirebaseStatus from '../components/FirebaseStatus';
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
-    // Redirect authenticated users to dashboard
+    // Only redirect if Firebase is configured and user is authenticated
     if (user) {
       navigate('/dashboard');
     }
@@ -41,6 +42,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="hero section">
         <div className="container">
+          <FirebaseStatus />
           <div className="text-center">
             <h1 className="hero-title">
               Create Your Professional Portfolio

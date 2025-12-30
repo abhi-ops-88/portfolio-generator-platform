@@ -30,6 +30,10 @@ export const AuthProvider = ({ children }) => {
 
   // Sign up with email and password
   const signUp = async (email, password, displayName) => {
+    if (!auth) {
+      throw new Error('Firebase authentication is not configured');
+    }
+    
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       
@@ -54,6 +58,10 @@ export const AuthProvider = ({ children }) => {
 
   // Sign in with email and password
   const signIn = async (email, password) => {
+    if (!auth) {
+      throw new Error('Firebase authentication is not configured');
+    }
+    
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       toast.success('Welcome back!');
@@ -66,6 +74,10 @@ export const AuthProvider = ({ children }) => {
 
   // Sign in with Google
   const signInWithGoogle = async () => {
+    if (!auth || !googleProvider) {
+      throw new Error('Firebase authentication is not configured');
+    }
+    
     try {
       const result = await signInWithPopup(auth, googleProvider);
       
@@ -82,6 +94,10 @@ export const AuthProvider = ({ children }) => {
 
   // Sign out
   const logout = async () => {
+    if (!auth) {
+      throw new Error('Firebase authentication is not configured');
+    }
+    
     try {
       await signOut(auth);
       setUserProfile(null);
@@ -94,6 +110,10 @@ export const AuthProvider = ({ children }) => {
 
   // Reset password
   const resetPassword = async (email) => {
+    if (!auth) {
+      throw new Error('Firebase authentication is not configured');
+    }
+    
     try {
       await sendPasswordResetEmail(auth, email);
       toast.success('Password reset email sent!');
@@ -105,7 +125,7 @@ export const AuthProvider = ({ children }) => {
 
   // Create user profile in Firestore
   const createUserProfile = async (user, additionalData = {}) => {
-    if (!user) return;
+    if (!user || !db) return;
 
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
@@ -137,7 +157,7 @@ export const AuthProvider = ({ children }) => {
 
   // Update user profile
   const updateUserProfile = async (updates) => {
-    if (!user) return;
+    if (!user || !db) return;
 
     try {
       const userRef = doc(db, 'users', user.uid);
@@ -158,6 +178,7 @@ export const AuthProvider = ({ children }) => {
   // Save portfolio data
   const savePortfolio = async (portfolioData, portfolioId = null) => {
     if (!user) throw new Error('User must be authenticated');
+    if (!db) throw new Error('Database is not configured');
 
     try {
       const userRef = doc(db, 'users', user.uid);
@@ -202,7 +223,7 @@ export const AuthProvider = ({ children }) => {
 
   // Get user portfolios
   const getUserPortfolios = async () => {
-    if (!user) return [];
+    if (!user || !db) return [];
 
     try {
       const userRef = doc(db, 'users', user.uid);
@@ -221,6 +242,8 @@ export const AuthProvider = ({ children }) => {
 
   // Load user profile from Firestore
   const loadUserProfile = async (userId) => {
+    if (!db) return;
+    
     try {
       const userRef = doc(db, 'users', userId);
       const userSnap = await getDoc(userRef);
