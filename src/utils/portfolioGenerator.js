@@ -1350,4 +1350,4 @@ Feel free to fork this project and customize it for your own use!
 ---
 
 Built with ❤️ using [Portfolio Generator](https://github.com/your-username/portfolio-generator)`;
-};`;
+};
