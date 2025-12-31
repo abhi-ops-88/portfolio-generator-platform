@@ -136,9 +136,19 @@ const Home = () => {
       <style jsx>{`
         .hero-theme-toggle {
           position: absolute;
-          top: 2rem;
-          right: 2rem;
-          z-index: 10;
+          top: 1.5rem;
+          right: 1.5rem;
+          z-index: 20;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: var(--radius-lg);
+          padding: 0.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="blackwhite"] .hero-theme-toggle {
+          background: rgba(0, 0, 0, 0.1);
+          border-color: rgba(255, 255, 255, 0.3);
         }
 
         .highlight {
@@ -233,11 +243,28 @@ const Home = () => {
           .hero-theme-toggle {
             top: 1rem;
             right: 1rem;
+            padding: 0.25rem;
           }
 
           .hero-buttons {
             flex-direction: column;
             align-items: center;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-theme-toggle {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin: 0 auto 1rem auto;
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+          }
+
+          [data-theme="blackwhite"] .hero-theme-toggle {
+            background: rgba(0, 0, 0, 0.2);
           }
         }
       `}</style>

@@ -62,6 +62,8 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          position: relative;
+          z-index: 100;
         }
 
         .theme-toggle-btn {
@@ -75,6 +77,7 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
           transition: all 0.3s ease;
           position: relative;
           overflow: hidden;
+          flex-shrink: 0;
         }
 
         /* AWS Theme Styles */
@@ -94,6 +97,7 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
           color: var(--aws-gray-700);
           font-size: 0.875rem;
           font-weight: 500;
+          white-space: nowrap;
         }
 
         /* Black & White Theme Styles */
@@ -113,6 +117,7 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
           color: var(--gray-700);
           font-size: 0.875rem;
           font-weight: 600;
+          white-space: nowrap;
         }
 
         /* Animation for theme transition */
@@ -141,6 +146,10 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
           .theme-label {
             display: none;
           }
+          
+          .theme-toggle-container {
+            gap: 0.25rem;
+          }
         }
 
         /* Focus styles for accessibility */
@@ -155,6 +164,14 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
 
         [data-theme="blackwhite"] .theme-toggle-btn:focus {
           outline-color: var(--primary-black);
+        }
+
+        /* Prevent text selection on button */
+        .theme-toggle-btn {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
         }
       `}</style>
     </div>

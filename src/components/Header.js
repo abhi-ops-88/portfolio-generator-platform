@@ -165,6 +165,24 @@ const Header = () => {
           .user-name {
             display: none;
           }
+          
+          .aws-nav {
+            gap: 0.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .aws-nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+          }
+          
+          .aws-header-content {
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.5rem var(--spacing-md);
+          }
         }
       `}</style>
     </header>
