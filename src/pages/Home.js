@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Rocket, Github, Globe, Zap, Users, Star } from 'lucide-react';
 import FirebaseStatus from '../components/FirebaseStatus';
-import ThemeToggle from '../components/ThemeToggle';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -43,9 +42,6 @@ const Home = () => {
       {/* Hero Section */}
       <section className="aws-hero">
         <div className="aws-hero-content">
-          <div className="hero-theme-toggle">
-            <ThemeToggle showLabel={true} size="default" />
-          </div>
           <FirebaseStatus />
           <h1 className="aws-hero-title">
             Stack Your Story Instantly
@@ -134,23 +130,6 @@ const Home = () => {
       </section>
 
       <style jsx>{`
-        .hero-theme-toggle {
-          position: absolute;
-          top: 1.5rem;
-          right: 1.5rem;
-          z-index: 20;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          border-radius: var(--radius-lg);
-          padding: 0.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        [data-theme="blackwhite"] .hero-theme-toggle {
-          background: rgba(0, 0, 0, 0.1);
-          border-color: rgba(255, 255, 255, 0.3);
-        }
-
         .highlight {
           color: var(--aws-orange);
         }
@@ -240,31 +219,9 @@ const Home = () => {
         }
 
         @media (max-width: 768px) {
-          .hero-theme-toggle {
-            top: 1rem;
-            right: 1rem;
-            padding: 0.25rem;
-          }
-
           .hero-buttons {
             flex-direction: column;
             align-items: center;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .hero-theme-toggle {
-            position: relative;
-            top: auto;
-            right: auto;
-            margin: 0 auto 1rem auto;
-            display: flex;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-          }
-
-          [data-theme="blackwhite"] .hero-theme-toggle {
-            background: rgba(0, 0, 0, 0.2);
           }
         }
       `}</style>

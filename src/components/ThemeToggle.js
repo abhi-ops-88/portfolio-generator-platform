@@ -26,9 +26,9 @@ const ThemeToggle = ({ showLabel = true, size = 'default' }) => {
 
   const getThemeLabel = () => {
     if (isAWSTheme) {
-      return 'AWS Theme';
+      return 'AWS';
     } else {
-      return 'B&W Theme';
+      return 'B&W';
     }
   };
 

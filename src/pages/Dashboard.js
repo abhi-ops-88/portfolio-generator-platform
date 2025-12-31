@@ -188,7 +188,7 @@ const Dashboard = () => {
                   </div>
                   <div className="menu-divider"></div>
                   <div className="menu-item theme-menu-item">
-                    <ThemeToggle showLabel={true} size="small" />
+                    <ThemeToggle showLabel={false} size="small" />
                   </div>
                   <div className="menu-divider"></div>
                   <button className="menu-item" onClick={() => navigate('/settings')}>
