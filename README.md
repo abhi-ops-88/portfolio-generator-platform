@@ -1,21 +1,21 @@
-# Portfolio Generator Platform
+# DeckFolio - Stack Your Story Instantly
 
-A comprehensive platform for generating and deploying professional portfolio websites with support for multiple hosting platforms including Vercel, Netlify, and GitHub Pages.
+A comprehensive platform for generating and deploying professional portfolio websites with enterprise-grade deployment support for multiple hosting platforms including Vercel, Netlify, and GitHub Pages.
 
 ## 🚀 Features
 
 ### Portfolio Generation
-- **Interactive Form Builder**: Step-by-step portfolio creation
-- **Real-time Preview**: See changes as you build
-- **Professional Templates**: Modern, responsive designs
-- **Theme Customization**: Colors, fonts, and layouts
-- **Content Management**: Easy editing and updates
+- **Deck-Based Builder**: Stack your story with our intuitive step-by-step interface
+- **Real-time Preview**: See changes as you build your professional narrative
+- **Professional Templates**: Modern, responsive designs with AWS-inspired styling
+- **Theme Customization**: Enterprise-grade colors, fonts, and layouts
+- **Content Management**: Easy editing and updates with professional polish
 
 ### Multi-Platform Deployment
 - **Vercel**: Edge functions and automatic optimizations
 - **Netlify**: Continuous deployment with global CDN
 - **GitHub Pages**: Free hosting with custom domains
-- **One-Click Deploy**: Automated setup and configuration
+- **One-Click Deploy**: Automated setup and configuration with enterprise reliability
 
 ### Generated Portfolio Features
 - **Responsive Design**: Mobile-first, works on all devices
@@ -34,6 +34,7 @@ A comprehensive platform for generating and deploying professional portfolio web
 - **React Toastify**: Notifications
 - **Lucide React**: Modern icons
 - **Firebase**: Authentication and data storage
+- **AWS-Inspired Design**: Enterprise-grade UI components
 
 ### Backend (Node.js API)
 - **Express.js**: Web framework
@@ -50,7 +51,7 @@ A comprehensive platform for generating and deploying professional portfolio web
 
 ## 📋 Prerequisites
 
-Before running this project, make sure you have:
+Before running DeckFolio, make sure you have:
 
 - **Node.js** (v16 or higher)
 - **npm** or **yarn**
@@ -62,18 +63,18 @@ Before running this project, make sure you have:
 
 ## 🚀 Quick Deployment to Vercel
 
-To make your Portfolio Generator publicly available:
+To make your DeckFolio publicly available:
 
 ### Option 1: One-Click Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/portfolio-generator)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/deckfolio)
 
 ### Option 2: Manual Deployment
 
 1. **Push to GitHub**:
    ```bash
    git add .
-   git commit -m "Portfolio Generator app"
+   git commit -m "DeckFolio app"
    git push origin main
    ```
 
@@ -116,7 +117,7 @@ deploy.bat
 
 \`\`\`bash
 git clone <repository-url>
-cd portfolio-generator-platform
+cd deckfolio
 \`\`\`
 
 #### 2. Install Dependencies
@@ -179,7 +180,7 @@ The application will be available at:
 ## 📁 Project Structure
 
 \`\`\`
-portfolio-generator-platform/
+deckfolio/
 ├── public/                 # Static files
 ├── src/                   # React application source
 │   ├── components/        # Reusable components
@@ -188,6 +189,7 @@ portfolio-generator-platform/
 │   ├── contexts/         # React contexts
 │   ├── pages/            # Page components
 │   ├── utils/            # Utility functions
+│   ├── styles/           # AWS-inspired theme styles
 │   └── config/           # Configuration files
 ├── server/               # Backend API
 │   ├── routes/          # API routes
@@ -199,7 +201,7 @@ portfolio-generator-platform/
 
 ## 🎯 Usage
 
-### 1. Create Your Portfolio
+### 1. Stack Your Story
 
 1. **Sign Up/Login**: Create an account or sign in
 2. **Personal Information**: Add your basic details
@@ -207,7 +209,7 @@ portfolio-generator-platform/
 4. **Resume**: Add skills, experience, and education
 5. **Projects**: Showcase your work with images and descriptions
 6. **Contact**: Add your contact information
-7. **Theme**: Customize colors and styling
+7. **Theme**: Customize colors and styling with AWS-inspired design
 
 ### 2. Preview Your Portfolio
 
@@ -215,12 +217,12 @@ portfolio-generator-platform/
 - Make adjustments as needed
 - Test on different screen sizes
 
-### 3. Deploy Your Portfolio
+### 3. Deploy Instantly
 
 1. **Choose Platform**: Select Vercel, Netlify, or GitHub Pages
 2. **Configure Tokens**: Add your API tokens (see [Deployment Guide](DEPLOYMENT_GUIDE.md))
 3. **Deploy**: Click deploy and wait for completion
-4. **Access**: Your portfolio will be live at the provided URL
+4. **Access**: Your story goes live instantly at the provided URL
 
 ## 🔧 Configuration
 
@@ -237,19 +239,19 @@ See the detailed [Deployment Guide](DEPLOYMENT_GUIDE.md) for platform-specific t
 
 ## 🎨 Customization
 
-### Theme Options
-- **Primary Color**: Main brand color
-- **Secondary Color**: Accent color
-- **Background Color**: Page background
-- **Typography**: Font selection
-- **Layout**: Section arrangements
+### AWS-Inspired Theme Options
+- **Primary Color**: AWS Orange (#FF9900)
+- **Secondary Color**: AWS Blue (#232F3E)
+- **Background Color**: Professional grays
+- **Typography**: Amazon Ember font family
+- **Layout**: Enterprise-grade section arrangements
 
 ### Content Sections
-- **Hero**: Personal introduction
-- **About**: Professional summary
-- **Resume**: Skills and experience
-- **Projects**: Portfolio showcase
-- **Contact**: Contact information
+- **Hero**: Personal introduction with professional styling
+- **About**: Professional summary with enterprise polish
+- **Resume**: Skills and experience with structured layout
+- **Projects**: Portfolio showcase with card-based design
+- **Contact**: Contact information with professional forms
 
 ## 🚀 Deployment Options
 
@@ -300,7 +302,7 @@ npm test
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions to DeckFolio! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (\`git checkout -b feature/amazing-feature\`)
@@ -313,6 +315,7 @@ We welcome contributions! Please follow these steps:
 - Add tests for new features
 - Update documentation as needed
 - Ensure all tests pass
+- Maintain AWS-inspired design consistency
 
 ## 🐛 Troubleshooting
 
@@ -333,8 +336,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - React team for the amazing framework
 - Firebase for authentication and database services
+- AWS for design inspiration and enterprise-grade patterns
 - Vercel, Netlify, and GitHub for hosting platforms
-- All contributors and users of this project
+- All contributors and users of DeckFolio
 
 ## 📞 Support
 
@@ -345,4 +349,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Happy Portfolio Building! 🎉**
+**Happy Story Stacking with DeckFolio! 📚✨**

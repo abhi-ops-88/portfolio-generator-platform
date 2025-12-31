@@ -15,8 +15,10 @@ import Dashboard from './pages/Dashboard';
 import Generator from './pages/Generator';
 import Preview from './pages/Preview';
 import Deploy from './pages/Deploy';
+import DeployOptions from './pages/DeployOptions';
 
 import './App.css';
+import './styles/aws-inspired-theme.css';
 
 function App() {
   return (
@@ -74,6 +76,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Deploy />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/deploy-options" 
+                element={
+                  <ProtectedRoute>
+                    <DeployOptions />
                   </ProtectedRoute>
                 } 
               />

@@ -1,6 +1,6 @@
 {
-  "short_name": "Portfolio Generator",
-  "name": "Portfolio Generator Platform",
+  "short_name": "DeckFolio",
+  "name": "DeckFolio - Stack Your Story Instantly",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#FF9900",
+  "background_color": "#232F3E"
 }

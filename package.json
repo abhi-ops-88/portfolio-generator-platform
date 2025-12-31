@@ -1,6 +1,7 @@
 {
-  "name": "portfolio-generator-client",
+  "name": "deckfolio-client",
   "version": "1.0.0",
+  "description": "DeckFolio - Stack Your Story Instantly. Professional portfolio generator with enterprise-grade deployment.",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

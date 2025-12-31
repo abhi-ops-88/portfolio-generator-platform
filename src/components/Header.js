@@ -53,24 +53,25 @@ const Header = () => {
   }
 
   return (
-    <header className="header">
-      <div className="header-content">
-        <Link to="/" className="logo">
-          Portfolio Generator
+    <header className="aws-header">
+      <div className="aws-header-content">
+        <Link to="/" className="aws-logo">
+          📚 DeckFolio
         </Link>
         
-        <nav className="nav">
+        <nav className="aws-nav">
           {user ? (
             // Authenticated navigation
             <>
-              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
+              <Link to="/dashboard" className={`aws-nav-link ${isActive('/dashboard')}`}>
                 Dashboard
               </Link>
               <button 
                 onClick={handleCreatePortfolio}
-                className={`nav-link nav-button ${isActive('/generator')}`}
+                className={`aws-nav-link ${isActive('/generator')}`}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
               >
-                Create Portfolio
+                Stack Portfolio
               </button>
               <div className="user-section">
                 <div className="user-info">
@@ -91,13 +92,13 @@ const Header = () => {
           ) : (
             // Public navigation
             <>
-              <Link to="/" className={`nav-link ${isActive('/')}`}>
+              <Link to="/" className={`aws-nav-link ${isActive('/')}`}>
                 Home
               </Link>
-              <Link to="/login" className="nav-link">
+              <Link to="/login" className="aws-nav-link">
                 Sign In
               </Link>
-              <Link to="/signup" className="btn btn-primary btn-small">
+              <Link to="/signup" className="btn btn-primary btn-sm">
                 Get Started
               </Link>
             </>
@@ -106,59 +107,6 @@ const Header = () => {
       </div>
 
       <style jsx>{`
-        .header {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          background: white;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          z-index: 1000;
-          padding: 1rem 0;
-        }
-
-        .header-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .logo {
-          font-size: 1.5rem;
-          font-weight: bold;
-          color: #3b82f6;
-          text-decoration: none;
-        }
-
-        .nav {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-        }
-
-        .nav-link {
-          text-decoration: none;
-          color: #64748b;
-          font-weight: 500;
-          transition: color 0.3s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-          color: #3b82f6;
-        }
-
-        .nav-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-family: inherit;
-          font-size: inherit;
-        }
-
         .user-section {
           display: flex;
           align-items: center;
@@ -182,48 +130,35 @@ const Header = () => {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: #f3f4f6;
+          background: var(--aws-blue-light);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #6b7280;
+          color: var(--aws-gray-300);
         }
 
         .user-name {
           font-weight: 500;
-          color: #374151;
+          color: var(--aws-gray-200);
           font-size: 0.875rem;
         }
 
         .logout-btn {
           background: none;
           border: none;
-          color: #6b7280;
+          color: var(--aws-gray-300);
           cursor: pointer;
           padding: 0.5rem;
-          border-radius: 0.375rem;
-          transition: all 0.2s ease;
+          border-radius: var(--radius-sm);
+          transition: var(--transition-fast);
         }
 
         .logout-btn:hover {
-          background: #f3f4f6;
-          color: #374151;
-        }
-
-        .btn-small {
-          padding: 0.5rem 1rem;
-          font-size: 0.875rem;
+          background: var(--aws-blue-light);
+          color: var(--aws-white);
         }
 
         @media (max-width: 768px) {
-          .header-content {
-            padding: 0 1rem;
-          }
-          
-          .nav {
-            gap: 1rem;
-          }
-
           .user-name {
             display: none;
           }

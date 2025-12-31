@@ -277,22 +277,23 @@ const Generator = () => {
         try {
           const availablePlatforms = autoDeployService.getAvailablePlatforms();
           if (availablePlatforms.length > 0) {
-            toast.info('Deploying your portfolio...');
-            const deployResult = await autoDeployService.autoDeployPortfolio(portfolioData, 'github');
-            if (deployResult.success) {
-              toast.success('Portfolio generated and deployed successfully!');
-            }
+            // Show deployment options instead of auto-deploying
+            localStorage.setItem('generatedPortfolio', JSON.stringify(result.files));
+            localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+            localStorage.setItem('currentPortfolioId', savedPortfolioId || portfolioId || '');
+            
+            toast.success('Portfolio generated successfully!');
+            navigate('/deploy-options');
           } else {
             toast.success('Portfolio generated successfully!');
             toast.info('Configure deployment tokens to automatically deploy your portfolio');
+            navigate('/preview');
           }
         } catch (deployError) {
-          console.log('Auto-deployment failed:', deployError);
+          console.log('Auto-deployment setup failed:', deployError);
           toast.success('Portfolio generated successfully!');
-          toast.warning('Auto-deployment failed. You can deploy manually from the dashboard.');
+          navigate('/preview');
         }
-        
-        navigate('/preview');
       } else {
         toast.error(result.message || 'Failed to generate portfolio');
       }
@@ -322,11 +323,11 @@ const Generator = () => {
   const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <div className="generator">
-      <div className="container">
-        <div className="generator-header">
-          <h1>Create Your Portfolio</h1>
-          <p>Fill in your information step by step to generate your professional portfolio</p>
+    <div className="aws-section">
+      <div className="aws-container">
+        <div className="aws-section-header">
+          <h1 className="aws-section-title">Stack Your Story</h1>
+          <p className="aws-section-subtitle">Fill in your information step by step to generate your professional portfolio with DeckFolio</p>
         </div>
 
         {/* Progress Bar */}
@@ -355,9 +356,9 @@ const Generator = () => {
 
         {/* Form Content */}
         <div className="form-container">
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">{steps[currentStep].title}</h2>
+          <div className="aws-card">
+            <div className="aws-card-header">
+              <h2 className="aws-card-title">{steps[currentStep].title}</h2>
             </div>
             <div className="card-content">
               <CurrentStepComponent
@@ -387,7 +388,7 @@ const Generator = () => {
               <button
                 type="button"
                 onClick={saveProgress}
-                className="btn btn-secondary"
+                className="btn btn-outline"
                 disabled={loading}
               >
                 <Save className="w-4 h-4" />
@@ -396,7 +397,7 @@ const Generator = () => {
               <button
                 type="button"
                 onClick={loadProgress}
-                className="btn btn-secondary"
+                className="btn btn-outline"
               >
                 Load Progress
               </button>
@@ -415,12 +416,12 @@ const Generator = () => {
               <button
                 type="button"
                 onClick={generatePortfolio}
-                className="btn btn-success"
+                className="btn btn-primary btn-lg"
                 disabled={loading}
               >
                 {loading ? (
                   <>
-                    <div className="spinner" />
+                    <div className="aws-spinner" />
                     Generating...
                   </>
                 ) : (
@@ -436,28 +437,6 @@ const Generator = () => {
       </div>
 
       <style jsx>{`
-        .generator {
-          padding: 2rem 0;
-          min-height: calc(100vh - 80px);
-        }
-
-        .generator-header {
-          text-align: center;
-          margin-bottom: 3rem;
-        }
-
-        .generator-header h1 {
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          color: #111827;
-        }
-
-        .generator-header p {
-          font-size: 1.125rem;
-          color: #6b7280;
-        }
-
         .progress-bar {
           position: relative;
           margin-bottom: 3rem;
@@ -475,37 +454,38 @@ const Generator = () => {
           flex-direction: column;
           align-items: center;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: var(--transition-normal);
         }
 
         .progress-step.active .step-number {
-          background: #3b82f6;
-          color: white;
+          background: var(--aws-orange);
+          color: var(--aws-white);
         }
 
         .progress-step.current .step-number {
-          background: #1d4ed8;
+          background: var(--aws-orange-dark);
           transform: scale(1.1);
+          box-shadow: var(--shadow-md);
         }
 
         .step-number {
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background: #e5e7eb;
-          color: #6b7280;
+          background: var(--aws-gray-200);
+          color: var(--aws-gray-600);
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 600;
           margin-bottom: 0.5rem;
-          transition: all 0.3s ease;
+          transition: var(--transition-normal);
         }
 
         .step-title {
           font-size: 0.875rem;
           font-weight: 500;
-          color: #6b7280;
+          color: var(--aws-gray-600);
           text-align: center;
         }
 
@@ -515,14 +495,14 @@ const Generator = () => {
           left: 20px;
           right: 20px;
           height: 2px;
-          background: #e5e7eb;
+          background: var(--aws-gray-200);
           z-index: 1;
         }
 
         .progress-fill {
           height: 100%;
-          background: #3b82f6;
-          transition: width 0.3s ease;
+          background: var(--aws-orange);
+          transition: var(--transition-normal);
         }
 
         .form-container {
@@ -530,7 +510,7 @@ const Generator = () => {
         }
 
         .form-navigation {
-          border-top: 1px solid #e5e7eb;
+          border-top: 1px solid var(--aws-gray-200);
           padding-top: 2rem;
         }
 

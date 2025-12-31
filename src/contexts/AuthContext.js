@@ -398,10 +398,16 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
+        // Store user info for deployment service
+        localStorage.setItem('user_email', user.email);
+        localStorage.setItem('user_name', user.displayName || '');
         await loadUserProfile(user.uid);
       } else {
         setUser(null);
         setUserProfile(null);
+        // Clear user info
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('user_name');
       }
       setLoading(false);
     });

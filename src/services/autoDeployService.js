@@ -63,42 +63,80 @@ class AutoDeployService {
   // Auto-deploy to selected platform
   async autoDeployPortfolio(portfolioData, deploymentPlatform = 'github') {
     try {
-      const repoInfo = JSON.parse(localStorage.getItem('user_repo_info') || '{}');
+      let repoInfo = JSON.parse(localStorage.getItem('user_repo_info') || '{}');
       
+      // If no repository exists, create one first
       if (!repoInfo.repoUrl) {
-        throw new Error('No repository found. Please create a repository first.');
+        const githubToken = localStorage.getItem('github_token');
+        if (!githubToken) {
+          throw new Error('GitHub token not found. Please configure GitHub integration first.');
+        }
+        
+        // Extract user info for repo creation
+        const userEmail = localStorage.getItem('user_email') || 'user@example.com';
+        const userName = localStorage.getItem('user_name') || portfolioData?.personalInfo?.name || 'User';
+        
+        const user = {
+          email: userEmail,
+          displayName: userName
+        };
+        
+        toast.info('Creating GitHub repository...');
+        const repoResult = await this.createUserRepository(user, portfolioData);
+        
+        if (!repoResult || !repoResult.success) {
+          throw new Error('Failed to create GitHub repository');
+        }
+        
+        repoInfo = {
+          repoUrl: repoResult.repoUrl,
+          cloneUrl: repoResult.cloneUrl,
+          siteUrl: repoResult.siteUrl,
+          username: repoResult.username,
+          repoName: repoResult.repoName
+        };
       }
 
       // Generate updated portfolio files
       const portfolioFiles = await this.generatePortfolioFiles(portfolioData);
 
       // Update repository with new files
+      toast.info('Updating repository files...');
       await this.updateRepository(repoInfo, portfolioFiles);
 
       // Deploy to selected platform
       let deployResult;
       switch (deploymentPlatform.toLowerCase()) {
         case 'vercel':
+          toast.info('Deploying to Vercel...');
           deployResult = await this.deployToVercel(repoInfo, portfolioData);
           break;
         case 'netlify':
+          toast.info('Deploying to Netlify...');
           deployResult = await this.deployToNetlify(repoInfo, portfolioData);
           break;
         case 'github':
         default:
+          toast.info('Deploying to GitHub Pages...');
           deployResult = await this.deployToGitHubPages(repoInfo);
           break;
       }
 
       if (deployResult.success) {
-        toast.success(`Portfolio deployed successfully to ${deploymentPlatform}!`);
-        return deployResult;
+        // Return comprehensive deployment info
+        return {
+          success: true,
+          platform: deploymentPlatform,
+          siteUrl: deployResult.siteUrl || repoInfo.siteUrl,
+          repoUrl: repoInfo.repoUrl,
+          deploymentUrl: deployResult.deploymentUrl,
+          message: `Portfolio deployed successfully to ${deploymentPlatform}!`
+        };
       } else {
         throw new Error(deployResult.message || 'Deployment failed');
       }
     } catch (error) {
       console.error('Auto-deploy error:', error);
-      toast.error(`Deployment failed: ${error.message}`);
       throw error;
     }
   }
