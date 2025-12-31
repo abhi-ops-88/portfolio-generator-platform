@@ -21,6 +21,7 @@ import {
   Zap
 } from 'lucide-react';
 import TokenSetup from '../components/TokenSetup';
+import ThemeToggle from '../components/ThemeToggle';
 import autoDeployService from '../services/autoDeployService';
 
 const Dashboard = () => {
@@ -186,7 +187,11 @@ const Dashboard = () => {
                     <p className="user-email">{user?.email}</p>
                   </div>
                   <div className="menu-divider"></div>
-                  <button className="menu-item">
+                  <div className="menu-item theme-menu-item">
+                    <ThemeToggle showLabel={true} size="small" />
+                  </div>
+                  <div className="menu-divider"></div>
+                  <button className="menu-item" onClick={() => navigate('/settings')}>
                     <Settings className="w-4 h-4" />
                     Settings
                   </button>
@@ -475,6 +480,15 @@ const Dashboard = () => {
 
         .menu-item:hover {
           background: var(--aws-gray-50);
+        }
+
+        .theme-menu-item {
+          padding: 0.75rem 1rem;
+          justify-content: flex-start;
+        }
+
+        .theme-menu-item:hover {
+          background: transparent;
         }
 
         .user-avatar {

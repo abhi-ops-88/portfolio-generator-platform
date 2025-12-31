@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Rocket, Github, Globe, Zap, Users, Star } from 'lucide-react';
 import FirebaseStatus from '../components/FirebaseStatus';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -42,6 +43,9 @@ const Home = () => {
       {/* Hero Section */}
       <section className="aws-hero">
         <div className="aws-hero-content">
+          <div className="hero-theme-toggle">
+            <ThemeToggle showLabel={true} size="default" />
+          </div>
           <FirebaseStatus />
           <h1 className="aws-hero-title">
             Stack Your Story Instantly
@@ -130,8 +134,20 @@ const Home = () => {
       </section>
 
       <style jsx>{`
+        .hero-theme-toggle {
+          position: absolute;
+          top: 2rem;
+          right: 2rem;
+          z-index: 10;
+        }
+
         .highlight {
           color: var(--aws-orange);
+        }
+
+        [data-theme="blackwhite"] .highlight {
+          color: var(--accent-silver);
+          text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
         }
 
         .hero-buttons {
@@ -161,6 +177,18 @@ const Home = () => {
           margin-bottom: var(--spacing-lg);
         }
 
+        [data-theme="blackwhite"] .feature-icon {
+          background: var(--gray-100);
+          color: var(--primary-black);
+          border: 2px solid var(--gray-300);
+        }
+
+        [data-theme="blackwhite"] .feature-card:hover .feature-icon {
+          background: var(--primary-black);
+          color: var(--primary-white);
+          border-color: var(--primary-black);
+        }
+
         .step-card {
           text-align: center;
         }
@@ -179,9 +207,21 @@ const Home = () => {
           margin-bottom: var(--spacing-lg);
         }
 
+        [data-theme="blackwhite"] .step-number {
+          background: var(--primary-black);
+          color: var(--primary-white);
+          border: 3px solid var(--primary-white);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
         .cta-section {
           background: linear-gradient(135deg, var(--aws-blue) 0%, var(--aws-blue-dark) 100%);
           color: var(--aws-white);
+        }
+
+        [data-theme="blackwhite"] .cta-section {
+          background: linear-gradient(135deg, var(--primary-black) 0%, var(--charcoal) 100%);
+          color: var(--primary-white);
         }
 
         .cta-content {
@@ -190,6 +230,11 @@ const Home = () => {
         }
 
         @media (max-width: 768px) {
+          .hero-theme-toggle {
+            top: 1rem;
+            right: 1rem;
+          }
+
           .hero-buttons {
             flex-direction: column;
             align-items: center;

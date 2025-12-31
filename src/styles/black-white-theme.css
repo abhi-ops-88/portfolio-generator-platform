@@ -1,0 +1,395 @@
+/* Black & White Professional Theme for DeckFolio */
+
+/* Theme Variables - Black & White */
+[data-theme="blackwhite"] {
+  /* Primary Colors */
+  --primary-black: #000000;
+  --primary-white: #FFFFFF;
+  --soft-black: #1A1A1A;
+  --charcoal: #2D2D2D;
+  --dark-gray: #404040;
+  
+  /* Neutral Grays */
+  --gray-50: #FAFAFA;
+  --gray-100: #F5F5F5;
+  --gray-200: #EEEEEE;
+  --gray-300: #E0E0E0;
+  --gray-400: #BDBDBD;
+  --gray-500: #9E9E9E;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  
+  /* Accent Colors */
+  --accent-silver: #C0C0C0;
+  --accent-platinum: #E5E4E2;
+  --accent-charcoal: #36454F;
+  
+  /* Override AWS variables for black/white theme */
+  --aws-orange: var(--primary-black);
+  --aws-orange-dark: var(--soft-black);
+  --aws-blue: var(--primary-black);
+  --aws-blue-light: var(--charcoal);
+  --aws-blue-dark: var(--primary-black);
+  
+  --aws-white: var(--primary-white);
+  --aws-gray-50: var(--gray-50);
+  --aws-gray-100: var(--gray-100);
+  --aws-gray-200: var(--gray-200);
+  --aws-gray-300: var(--gray-300);
+  --aws-gray-400: var(--gray-400);
+  --aws-gray-500: var(--gray-500);
+  --aws-gray-600: var(--gray-600);
+  --aws-gray-700: var(--gray-700);
+  --aws-gray-800: var(--gray-800);
+  --aws-gray-900: var(--gray-900);
+  
+  --aws-green: var(--primary-black);
+  --aws-red: var(--dark-gray);
+  --aws-purple: var(--charcoal);
+  --aws-teal: var(--dark-gray);
+}
+
+/* Black & White Theme Specific Styles */
+[data-theme="blackwhite"] body {
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+}
+
+/* Header Styles - Black & White */
+[data-theme="blackwhite"] .aws-header {
+  background: var(--primary-black);
+  color: var(--primary-white);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+[data-theme="blackwhite"] .aws-logo {
+  color: var(--primary-white);
+  font-weight: 800;
+}
+
+[data-theme="blackwhite"] .aws-nav-link {
+  color: var(--gray-300);
+}
+
+[data-theme="blackwhite"] .aws-nav-link:hover,
+[data-theme="blackwhite"] .aws-nav-link.active {
+  color: var(--primary-white);
+  background-color: var(--charcoal);
+}
+
+/* Button System - Black & White */
+[data-theme="blackwhite"] .btn-primary {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+  border: 2px solid var(--primary-black);
+}
+
+[data-theme="blackwhite"] .btn-primary:hover:not(:disabled) {
+  background-color: var(--soft-black);
+  border-color: var(--soft-black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="blackwhite"] .btn-secondary {
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+  border: 2px solid var(--primary-black);
+}
+
+[data-theme="blackwhite"] .btn-secondary:hover:not(:disabled) {
+  background-color: var(--gray-100);
+  border-color: var(--soft-black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="blackwhite"] .btn-outline {
+  background-color: transparent;
+  color: var(--primary-black);
+  border: 2px solid var(--primary-black);
+}
+
+[data-theme="blackwhite"] .btn-outline:hover:not(:disabled) {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+}
+
+/* Card System - Black & White */
+[data-theme="blackwhite"] .aws-card {
+  background: var(--primary-white);
+  border: 2px solid var(--gray-300);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="blackwhite"] .aws-card:hover {
+  border-color: var(--primary-black);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+}
+
+[data-theme="blackwhite"] .aws-card-header {
+  border-bottom: 2px solid var(--gray-200);
+}
+
+[data-theme="blackwhite"] .aws-card-title {
+  color: var(--primary-black);
+  font-weight: 700;
+}
+
+[data-theme="blackwhite"] .aws-card-subtitle {
+  color: var(--gray-700);
+}
+
+/* Hero Section - Black & White */
+[data-theme="blackwhite"] .aws-hero {
+  background: linear-gradient(135deg, var(--primary-black) 0%, var(--charcoal) 100%);
+  color: var(--primary-white);
+  position: relative;
+}
+
+[data-theme="blackwhite"] .aws-hero::before {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="bw-grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23bw-grid)"/></svg>');
+}
+
+[data-theme="blackwhite"] .aws-hero-title {
+  color: var(--primary-white);
+  font-weight: 900;
+}
+
+[data-theme="blackwhite"] .aws-hero-subtitle {
+  color: var(--gray-200);
+}
+
+[data-theme="blackwhite"] .highlight {
+  color: var(--accent-silver);
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+}
+
+/* Section Styles - Black & White */
+[data-theme="blackwhite"] .aws-section-alt {
+  background-color: var(--gray-50);
+}
+
+[data-theme="blackwhite"] .aws-section-title {
+  color: var(--primary-black);
+  font-weight: 800;
+}
+
+[data-theme="blackwhite"] .aws-section-subtitle {
+  color: var(--gray-700);
+}
+
+/* Form Styles - Black & White */
+[data-theme="blackwhite"] .aws-input,
+[data-theme="blackwhite"] .aws-textarea,
+[data-theme="blackwhite"] .aws-select {
+  border: 2px solid var(--gray-300);
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .aws-input:focus,
+[data-theme="blackwhite"] .aws-textarea:focus,
+[data-theme="blackwhite"] .aws-select:focus {
+  border-color: var(--primary-black);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="blackwhite"] .aws-label {
+  color: var(--primary-black);
+  font-weight: 600;
+}
+
+/* Badge System - Black & White */
+[data-theme="blackwhite"] .aws-badge-primary {
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+}
+
+[data-theme="blackwhite"] .aws-badge-secondary {
+  background-color: var(--gray-200);
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .aws-badge-success {
+  background-color: var(--dark-gray);
+  color: var(--primary-white);
+}
+
+[data-theme="blackwhite"] .aws-badge-warning {
+  background-color: var(--charcoal);
+  color: var(--primary-white);
+}
+
+[data-theme="blackwhite"] .aws-badge-error {
+  background-color: var(--gray-800);
+  color: var(--primary-white);
+}
+
+/* Alert System - Black & White */
+[data-theme="blackwhite"] .aws-alert-info {
+  background-color: var(--gray-100);
+  border-color: var(--gray-600);
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .aws-alert-success {
+  background-color: var(--gray-100);
+  border-color: var(--primary-black);
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .aws-alert-warning {
+  background-color: var(--gray-100);
+  border-color: var(--charcoal);
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .aws-alert-error {
+  background-color: var(--gray-100);
+  border-color: var(--gray-800);
+  color: var(--primary-black);
+}
+
+/* Loading States - Black & White */
+[data-theme="blackwhite"] .aws-spinner {
+  border-color: var(--gray-300);
+  border-top-color: var(--primary-black);
+}
+
+/* Progress Bar - Black & White */
+[data-theme="blackwhite"] .progress-fill {
+  background: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .progress-step.active .step-number {
+  background: var(--primary-black);
+  color: var(--primary-white);
+}
+
+[data-theme="blackwhite"] .progress-step.current .step-number {
+  background: var(--soft-black);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Feature Cards - Black & White */
+[data-theme="blackwhite"] .feature-icon {
+  background: var(--gray-100);
+  color: var(--primary-black);
+  border: 2px solid var(--gray-300);
+}
+
+[data-theme="blackwhite"] .feature-card:hover .feature-icon {
+  background: var(--primary-black);
+  color: var(--primary-white);
+  border-color: var(--primary-black);
+}
+
+/* Step Cards - Black & White */
+[data-theme="blackwhite"] .step-number {
+  background: var(--primary-black);
+  color: var(--primary-white);
+  border: 3px solid var(--primary-white);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* CTA Section - Black & White */
+[data-theme="blackwhite"] .cta-section {
+  background: linear-gradient(135deg, var(--primary-black) 0%, var(--charcoal) 100%);
+  color: var(--primary-white);
+}
+
+/* User Menu - Black & White */
+[data-theme="blackwhite"] .user-menu-dropdown {
+  background: var(--primary-white);
+  border: 2px solid var(--gray-300);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="blackwhite"] .menu-item:hover {
+  background: var(--gray-100);
+}
+
+[data-theme="blackwhite"] .user-name {
+  color: var(--primary-black);
+}
+
+[data-theme="blackwhite"] .user-email {
+  color: var(--gray-600);
+}
+
+/* Modal - Black & White */
+[data-theme="blackwhite"] .modal-content {
+  background: var(--primary-white);
+  border: 2px solid var(--gray-300);
+}
+
+[data-theme="blackwhite"] .modal-header {
+  border-bottom: 2px solid var(--gray-200);
+}
+
+[data-theme="blackwhite"] .modal-header h2 {
+  color: var(--primary-black);
+}
+
+/* Portfolio Actions - Black & White */
+[data-theme="blackwhite"] .portfolio-actions {
+  border-top: 2px solid var(--gray-200);
+}
+
+/* Meta Items - Black & White */
+[data-theme="blackwhite"] .meta-item {
+  color: var(--gray-600);
+}
+
+/* Site Link - Black & White */
+[data-theme="blackwhite"] .site-link {
+  color: var(--primary-black);
+  font-weight: 600;
+}
+
+[data-theme="blackwhite"] .site-link:hover {
+  color: var(--soft-black);
+}
+
+/* Responsive adjustments for black & white theme */
+@media (max-width: 768px) {
+  [data-theme="blackwhite"] .aws-card {
+    border-width: 1px;
+  }
+  
+  [data-theme="blackwhite"] .btn-primary,
+  [data-theme="blackwhite"] .btn-secondary,
+  [data-theme="blackwhite"] .btn-outline {
+    border-width: 1px;
+  }
+}
+
+/* High contrast mode enhancements for black & white theme */
+@media (prefers-contrast: high) {
+  [data-theme="blackwhite"] .btn-primary {
+    border-width: 3px;
+  }
+  
+  [data-theme="blackwhite"] .aws-card {
+    border-width: 3px;
+  }
+  
+  [data-theme="blackwhite"] .aws-input:focus,
+  [data-theme="blackwhite"] .aws-textarea:focus,
+  [data-theme="blackwhite"] .aws-select:focus {
+    border-width: 3px;
+  }
+}
+
+/* Print styles for black & white theme */
+@media print {
+  [data-theme="blackwhite"] * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { User, LogOut } from 'lucide-react';
 import { toast } from 'react-toastify';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const location = useLocation();
@@ -73,6 +74,7 @@ const Header = () => {
               >
                 Stack Portfolio
               </button>
+              <ThemeToggle showLabel={false} size="small" />
               <div className="user-section">
                 <div className="user-info">
                   {user.photoURL ? (
@@ -95,6 +97,7 @@ const Header = () => {
               <Link to="/" className={`aws-nav-link ${isActive('/')}`}>
                 Home
               </Link>
+              <ThemeToggle showLabel={false} size="small" />
               <Link to="/login" className="aws-nav-link">
                 Sign In
               </Link>
